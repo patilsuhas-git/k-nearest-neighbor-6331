@@ -23,7 +23,6 @@ def getColumns( filename, column_header=[] ):
                     column_header.append( row_header[colnum] )
                     colnum += 1
         break
-    # print column_header
     return column_header
 
 def readData( filename, split, column_header, trainDataSet=[], testDataSet=[] ):
@@ -32,7 +31,6 @@ def readData( filename, split, column_header, trainDataSet=[], testDataSet=[] ):
         lines = csv.reader(inputfile)
         dataset = list(lines)
         for x in range(len(dataset)-1):
-            # print dataset[x]
             if not column_header:
                 for y in range(len(column_header)-1):
                     dataset[x][y] = float(dataset[x][y])
@@ -49,7 +47,6 @@ def readData( filename, split, column_header, trainDataSet=[], testDataSet=[] ):
                     else:
                         testDataSet.append(dataset[x])
             row_count += 1
-        # print row_count
 
 def euclideanDistance( testdataInstanceAlpha, traindataInstanceBeta, length ) :
     distanceEuclidean = 0
@@ -76,24 +73,19 @@ def nearestNeighbour(trainingSet, testInstance, k):
         dist = euclideanDistance(testInstance, trainingSet[x], length)
         distances.append((trainingSet[x], dist))
     distances.sort(key=operator.itemgetter(1))
-    # print 'Distnce ====>>>>'+str(distances)
     neighbors = []
     for x in range(k):
         neighbors.append(distances[x][0])
-
     return neighbors
 
 def classifyTestInstance( neighbors ) :
     neighboursVote = {}
     for x in range( len( neighbors ) ):
         classValue = neighbors[x][-1]
-        # print response
         if classValue in neighboursVote:
-            # print response
             neighboursVote[classValue] += 1
         else:
             neighboursVote[classValue] = 1
-    # print neighboursVote
     testInstancevotes = sorted(neighboursVote.iteritems(), key=operator.itemgetter(1), reverse=True)[0][0]
     return testInstancevotes[0][0]
 
@@ -108,23 +100,19 @@ def averageAccuracy( accuracyList ) :
     totalAccuracy = 0
     for x in range(len(accuracyList)):
         totalAccuracy += accuracyList[x]
-
     return totalAccuracy/len(accuracyList)
 
 def kFoldCrossValidation( kFold, filename, column_header ) :
     rowCount = 0
     with open( filename, 'rb' ) as inputfile:
         lines = csv.reader(inputfile)
-        # print(list(lines)[0])
         dataset = list(lines)
         for x in range(len(dataset)-1):
-            # print dataset[x]
             if not column_header:
                 rowCount += 1
             else :
                 if ( row_count != 0 ) :
                     rowCount += 1
-    # k = 5
     print rowCount
     validation_dict = {}
     counter = 1
@@ -135,29 +123,21 @@ def kFoldCrossValidation( kFold, filename, column_header ) :
         current = i
     print('Current is', current + step)
     validation_dict[counter-1].extend(dataset[current+step:])
-    # print(validation_dict)
     return validation_dict
 
 def main():
     filename = 'data/glass.data';
     column_header = []
     validation_dict ={}
-    # split = 0.8
     kFold = 5
     getColumns( filename, column_header )
     validation_dict = kFoldCrossValidation(kFold, filename, column_header )
-    # print len(validation_dict)
-    # for key in validation_dict:
-    #     print 'This is key ' + str(key)
-    #     print 'This is list size ' + str(len(validation_dict[key]))
     accuracyList = []
     rotationCount = 1
     for k in range( kFold ) :
         testDataSet = []
         trainDataSet = []
         for key in validation_dict :
-            # print key
-            # print rotationCount
             if ( rotationCount == key ) :
                 print 'This is test key====='+ str(key)
                 print 'This is test ====='+ str(rotationCount)
@@ -167,19 +147,6 @@ def main():
                 print 'This is train ====='+ str(rotationCount)
                 trainDataSet.extend( validation_dict[key] )
         rotationCount += 1
-        # print len(testDataSet)
-        # print len(trainDataSet)
-        # print '/**************************/'
-
-        # filename = 'data/glass.data';
-        # testDataSet = []
-        # trainDataSet = []
-        # column_header = []
-        # split = 0.8
-        #
-        # getColumns(filename, column_header )
-        # # print column_header
-        # readData( filename, split, column_header, trainDataSet, testDataSet )
         print 'Test Data set : '+ repr(len(testDataSet))
         print 'Train Data set : '+ repr(len(trainDataSet))
 
@@ -188,20 +155,12 @@ def main():
 
         for val in range(len(testDataSet)):
             neighbours = nearestNeighbour( trainDataSet, testDataSet[val], k )
-            # print testDataSet[val]
-            # print neighbours
-            # print '*********************************'
-
             predictionResult = classifyTestInstance( neighbours )
             prediction.append( predictionResult )
 
-            # print prediction
-            # This is prediction for the test instance by getting vote from k neighbours
-        # print prediction
-        # print len(prediction)
         accuracy = computeAccuracy(testDataSet, prediction)
         accuracyList.append(accuracy)
         print('Accuracy: ' + repr(accuracy) + '%')
     print averageAccuracy(accuracyList)
 
-def main():
+main()
