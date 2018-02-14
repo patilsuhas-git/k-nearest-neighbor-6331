@@ -2,6 +2,7 @@ import csv
 import random
 import math
 import operator
+from random import shuffle
 
 # Assumption if one of the columns in header is a string then csv has header or it has data from first row.
 def getColumns( filename, column_header=[] ):
@@ -23,6 +24,7 @@ def getColumns( filename, column_header=[] ):
                     column_header.append( row_header[colnum] )
                     colnum += 1
         break
+    # print column_header
     return column_header
 
 def readData( filename, split, column_header, trainDataSet=[], testDataSet=[] ):
@@ -31,6 +33,7 @@ def readData( filename, split, column_header, trainDataSet=[], testDataSet=[] ):
         lines = csv.reader(inputfile)
         dataset = list(lines)
         for x in range(len(dataset)-1):
+            # print dataset[x]
             if not column_header:
                 for y in range(len(column_header)-1):
                     dataset[x][y] = float(dataset[x][y])
@@ -76,6 +79,7 @@ def nearestNeighbour(trainingSet, testInstance, k):
     neighbors = []
     for x in range(k):
         neighbors.append(distances[x][0])
+
     return neighbors
 
 def classifyTestInstance( neighbors ) :
@@ -100,6 +104,7 @@ def averageAccuracy( accuracyList ) :
     totalAccuracy = 0
     for x in range(len(accuracyList)):
         totalAccuracy += accuracyList[x]
+
     return totalAccuracy/len(accuracyList)
 
 def kFoldCrossValidation( kFold, filename, column_header ) :
@@ -114,6 +119,7 @@ def kFoldCrossValidation( kFold, filename, column_header ) :
                 if ( row_count != 0 ) :
                     rowCount += 1
     print rowCount
+    shuffle(dataset)
     validation_dict = {}
     counter = 1
     step = rowCount // kFold
@@ -131,6 +137,7 @@ def main():
     validation_dict ={}
     kFold = 5
     getColumns( filename, column_header )
+
     validation_dict = kFoldCrossValidation(kFold, filename, column_header )
     accuracyList = []
     rotationCount = 1
