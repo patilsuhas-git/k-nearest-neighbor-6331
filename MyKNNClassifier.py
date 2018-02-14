@@ -140,7 +140,7 @@ def main():
 
     validation_dict = kFoldCrossValidation(kFold, filename, column_header )
     accuracyList = []
-    rotationCount = 1
+    rotationCount = 1 
     for k in range( kFold ) :
         testDataSet = []
         trainDataSet = []
