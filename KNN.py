@@ -67,7 +67,6 @@ def getResponse(neighbors):
     sortedVotes = sorted(classVotes.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sortedVotes[0][0]
 
-
 def getAccuracy(testSet, predictions):
     correct = 0
     for x in range(len(testSet)):
